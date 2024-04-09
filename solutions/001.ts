@@ -1,31 +1,19 @@
-type CacheData = {
-    index: number;
-    value: number;
-};
-
 function twoSum(nums: number[], target: number): number[] {
-    let cache: { [key: number]: CacheData } = {}
-    let results: number[] = [];
+    let seen: { [key: number]: number } = {}
+    let retval: number[] = [];
 
     for (let i: number = 0; i < nums.length; i++) {
-        const val: number = nums[i];
-        const cacheKey: number = val;
+        const diff: number = target - nums[i];
+        if (diff in seen) {
+            retval = [seen[diff], i];
 
-        if (cacheKey in cache) {
-            const equalTarget = cache[cacheKey].value + val === target;
-
-            if (equalTarget) {
-                const firstIndex: number = cache[cacheKey].index;
-                const lastIndex: number = i;
-                results = [firstIndex, lastIndex];
-                break;
-            }
+            break;
         } else {
-            cache[target - val] = { index: i, value: val };
+            seen[nums[i]] = i
         }
     }
 
-    return results;
+    return retval;
 };
 
 export { twoSum }

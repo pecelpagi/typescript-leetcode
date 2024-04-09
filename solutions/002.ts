@@ -1,4 +1,4 @@
-class ListNode {
+export class ListNode {
     val: number
     next: ListNode | null
     constructor(val?: number, next?: ListNode | null) {
@@ -7,65 +7,25 @@ class ListNode {
     }
 }
 
-function addTwoNumbers(l1: ListNode | null, l2: ListNode | null): ListNode | null {
-    let head: ListNode | null = null;
+export function addTwoNumbers(l1: ListNode | null, l2: ListNode | null): ListNode | null {
+    const head = new ListNode();
+    let current: ListNode = head;
+    let carry: number = 0;
 
-    function insertAtEnd(val: number) {
-        let newNode: ListNode = new ListNode(val);
+    let current_l1: ListNode | null = l1;
+    let current_l2: ListNode | null = l2;
 
-        if (!head) {
-            head = newNode;
-            return;
-        }
+    while (current_l1 || current_l2 || carry != 0) {
+        const l1_value: number = current_l1 ? current_l1.val : 0;
+        const l2_value: number = current_l2 ? current_l2.val : 0;
+        const total: number = l1_value + l2_value + carry;
 
-        let currentNode: ListNode = head;
-
-        while (currentNode.next) {
-            currentNode = currentNode.next;
-        }
-
-        currentNode.next = newNode;
+        current.next = new ListNode(total % 10);
+        carry = Math.floor(total / 10);
+        current_l1 = current_l1 ? current_l1.next : null;
+        current_l2 = current_l2 ? current_l2.next : null;
+        current = current.next;
     }
 
-    function getLeadingNumber(latestSum: number) {
-        let leadingNumber: number = 0;
-
-        if (latestSum.toString().length > 1) leadingNumber = Number(latestSum.toString().charAt(0));
-
-        return leadingNumber;
-    }
-
-    let latestSum: number = 0;
-
-    let currentL1Node: ListNode | null = l1;
-    let currentL2Node: ListNode | null = l2;
-
-    while (currentL1Node || currentL2Node) {
-        let leadingNumber = getLeadingNumber(latestSum);
-        const l1NodeVal = currentL1Node ? currentL1Node.val : 0;
-        const l2NodeVal = currentL2Node ? currentL2Node.val : 0;
-
-        latestSum = l1NodeVal + l2NodeVal + leadingNumber;
-
-        const newValue: number = Number(latestSum.toString().charAt(latestSum.toString().length - 1));
-
-        insertAtEnd(newValue);
-
-        if (currentL1Node) {
-            currentL1Node = currentL1Node.next;
-        }
-
-        if (currentL2Node) {
-            currentL2Node = currentL2Node.next;
-        }
-
-        if ((latestSum.toString().length > 1) && !currentL1Node && !currentL2Node) {
-            leadingNumber = getLeadingNumber(latestSum);
-            insertAtEnd(leadingNumber);
-        }
-    }
-
-    return head;
+    return head.next;
 };
-
-export { ListNode, addTwoNumbers };
